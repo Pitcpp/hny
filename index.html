@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HNY Bear</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #07070b;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      }
+      body:before {
+        content: "";
+        position: fixed;
+        inset: -25%;
+        z-index: 0;
+        background: radial-gradient(
+            60% 40% at 50% 14%,
+            rgba(255, 255, 255, 0.14),
+            transparent 62%
+          ),
+          radial-gradient(
+            40% 30% at 18% 78%,
+            rgba(120, 140, 255, 0.1),
+            transparent 65%
+          ),
+          radial-gradient(
+            45% 35% at 82% 80%,
+            rgba(255, 170, 120, 0.1),
+            transparent 65%
+          );
+        filter: blur(18px);
+      }
+
+      /* ให้พลุอยู่ "เหนือพื้นหลัง" แต่ "ใต้หมี/ปุ่ม/ข้อความ" */
+      #fx {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* ข้อความเริ่มต้นซ่อน */
+      .hny {
+        position: fixed;
+        left: 50%;
+        top: 9%;
+        transform: translateX(-50%);
+
+        font-weight: 700;
+        font-size: 60px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        text-align: center;
+
+        background: linear-gradient(90deg, #000, #fff, #000);
+        background-size: 80%;
+        background-repeat: no-repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        animation: shine 5s linear infinite;
+
+        z-index: 3;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+      .hny.show {
+        opacity: 1;
+      }
+
+      @keyframes shine {
+        0% {
+          background-position-x: -500%;
+        }
+        100% {
+          background-position-x: 500%;
+        }
+      }
+
+      .stage {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 2;
+        padding: 24px;
+      }
+
+      /* ไม่มีกรอบ */
+      .bearWrap {
+        position: relative;
+        width: min(780px, 94vw);
+        aspect-ratio: 16/10;
+        border-radius: 28px;
+        overflow: hidden;
+        background: transparent;
+      }
+      .sketchfab-embed-wrapper,
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+
+      .clickLayer {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        background: radial-gradient(
+          60% 60% at 50% 55%,
+          rgba(255, 255, 255, 0.06),
+          rgba(0, 0, 0, 0.35)
+        );
+        transition: opacity 0.35s ease;
+      }
+      .clickLayer.off {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .btn {
+        padding: 14px 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #fff;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 14px 44px rgba(0, 0, 0, 0.4);
+        user-select: none;
+      }
+
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 13px;
+        z-index: 3;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(8px);
+        user-select: none;
+        transition: opacity 0.25s ease;
+      }
+      .hint.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="fx"></canvas>
+    <audio id="sfxBurst" preload="auto" crossorigin="anonymous">
+      <source
+        src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/329180/burst1.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <div class="hny" id="hny">Happy New Year 2026 !!!!</div>
+
+    <div class="stage">
+      <div class="bearWrap" id="bearWrap">
+        <div class="sketchfab-embed-wrapper">
+          <iframe
+            title="Teddybear toy"
+            frameborder="0"
+            allowfullscreen
+            mozallowfullscreen="true"
+            webkitallowfullscreen="true"
+            allow="autoplay; fullscreen; xr-spatial-tracking"
+            xr-spatial-tracking
+            execution-while-out-of-viewport
+            execution-while-not-rendered
+            web-share
+            src="https://sketchfab.com/models/e806f00712ee4f03909f9a7800864358/embed?autostart=1&preload=1&transparent=1&ui_theme=dark&ui_infos=0&ui_controls=0&ui_hint=0&ui_watermark=0&ui_watermark_link=0&dnt=1"
+          ></iframe>
+        </div>
+
+        <div class="clickLayer" id="clickLayer">
+          <div class="btn">Click Me !!!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- จะมีหรือไม่มีก็ได้ โค้ด JS กันไว้แล้ว -->
+    <!-- <div class="hint" id="hint">เริ่มต้นยังไม่มีข้อความ/พลุ • แตะครั้งแรกแล้วจะเริ่ม</div> -->
+
+    <script>
+      // ===== Fast fireworks (single canvas) =====
+      const canvas = document.getElementById("fx");
+      const ctx = canvas.getContext("2d", { alpha: true });
+
+      function resize() {
+        const dpr = Math.max(1, devicePixelRatio || 1);
+        canvas.width = Math.floor(innerWidth * dpr);
+        canvas.height = Math.floor(innerHeight * dpr);
+        canvas.style.width = innerWidth + "px";
+        canvas.style.height = innerHeight + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      addEventListener("resize", resize);
+      resize();
+
+      const particles = [];
+      const rand = (a, b) => Math.random() * (b - a) + a;
+
+      // ปรับความลื่น
+      const MAX_PARTICLES = 900;
+      const BURST_COUNT = 90;
+
+      function spawnBurst(x, y) {
+        const hue = rand(0, 360);
+        for (let i = 0; i < BURST_COUNT; i++) {
+          const a = rand(0, Math.PI * 2);
+          const sp = rand(2.0, 5.0);
+          particles.push({
+            x,
+            y,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp,
+            life: rand(40, 70),
+            age: 0,
+            r: rand(1.1, 2.2),
+            hue: (hue + rand(-25, 25) + 360) % 360,
+          });
+        }
+        if (particles.length > MAX_PARTICLES) {
+          particles.splice(0, particles.length - MAX_PARTICLES);
+        }
+      }
+
+      // จุดพลุรอบหมี (ออกนอกกรอบ)
+      const wrap = document.getElementById("bearWrap");
+      function outsidePoint() {
+        const r = wrap.getBoundingClientRect();
+        const pad = 90;
+        const spots = [
+          { x: r.left + r.width * 0.2, y: r.top - pad },
+          { x: r.left + r.width * 0.5, y: r.top - pad },
+          { x: r.left + r.width * 0.8, y: r.top - pad },
+          { x: r.left - pad, y: r.top + r.height * 0.45 },
+          { x: r.right + pad, y: r.top + r.height * 0.45 },
+          { x: r.left + r.width * 0.25, y: r.bottom + pad },
+          { x: r.left + r.width * 0.75, y: r.bottom + pad },
+        ];
+        return spots[(Math.random() * spots.length) | 0];
+      }
+
+      // animation loop
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min(32, now - last);
+        last = now;
+        const k = dt / 16.67;
+
+        // fade นุ่ม ๆ ให้ยังเห็นพลุชัด
+        ctx.fillStyle = "rgba(0,0,0,0.12)";
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.age += k;
+
+          p.vx *= 0.985;
+          p.vy *= 0.985;
+          p.vy += 0.06 * k;
+
+          p.x += p.vx * k;
+          p.y += p.vy * k;
+
+          const a = Math.max(0, 1 - p.age / p.life);
+
+          ctx.beginPath();
+          ctx.fillStyle = `hsla(${p.hue},100%,70%,${a})`;
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (p.age >= p.life) particles.splice(i, 1);
+        }
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      // ===== Start on click only =====
+      let started = false;
+      let timer = null;
+
+      const hny = document.getElementById("hny");
+      const hint = document.getElementById("hint");
+      const clickLayer = document.getElementById("clickLayer");
+      const sfxBurst = document.getElementById("sfxBurst");
+
+      function playBurstSound() {
+        if (!sfxBurst) return;
+
+        const a = sfxBurst.cloneNode(true); // สำคัญ: ทำให้เล่นซ้อน/ถี่ได้
+        a.volume = 0.35;
+
+        const p = a.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+
+      function fire() {
+        const p1 = outsidePoint();
+        spawnBurst(p1.x + rand(-25, 25), p1.y + rand(-20, 20));
+        if (Math.random() < 0.55) {
+          const p2 = outsidePoint();
+          spawnBurst(p2.x + rand(-25, 25), p2.y + rand(-20, 20));
+        }
+        playBurstSound();
+      }
+
+      clickLayer.addEventListener(
+        "click",
+        () => {
+          started = true;
+
+          playBurstSound();
+
+          // โชว์ข้อความค้างไว้
+          hny.classList.add("show");
+
+          // ซ่อน overlay
+          clickLayer.classList.add("off");
+
+          // ซ่อน hint แบบปลอดภัย (ถ้าไม่มี hint ก็ไม่พัง)
+          if (hint) hint.classList.add("hide");
+
+          // กดครั้งแรกค่อยมีพลุ
+          fire();
+
+          // เล่นอัตโนมัติ
+          if (!timer) {
+            timer = setInterval(() => {
+              if (!started) return;
+              fire();
+            }, 2400);
+          }
+        },
+        { once: true }
+      );
+    </script>
+  </body>
+</html>
