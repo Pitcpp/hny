@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>HNY</title>
+    <title>HNY Bear</title>
 
     <style>
       html,
@@ -162,6 +162,10 @@
       }
       .hint.hide {
         opacity: 0;
+        pointer-events: none;
+      }
+
+      .bearWrap iframe {
         pointer-events: none;
       }
     </style>
@@ -331,36 +335,34 @@
         playBurstSound();
       }
 
-      clickLayer.addEventListener(
-        "click",
-        () => {
-          started = true;
+      const startExperience = () => {
+        if (started) return; // กันยิงซ้ำ
+        started = true;
 
-          playBurstSound();
+        playBurstSound(); // ปลดล็อกเสียง (สำคัญมาก)
 
-          // โชว์ข้อความค้างไว้
-          hny.classList.add("show");
+        hny.classList.add("show");
+        clickLayer.classList.add("off");
+        if (hint) hint.classList.add("hide");
 
-          // ซ่อน overlay
-          clickLayer.classList.add("off");
+        fire();
 
-          // ซ่อน hint แบบปลอดภัย (ถ้าไม่มี hint ก็ไม่พัง)
-          if (hint) hint.classList.add("hide");
+        if (!timer) {
+          timer = setInterval(() => {
+            if (!started) return;
+            fire();
+          }, 2400);
+        }
 
-          // กดครั้งแรกค่อยมีพลุ
-          fire();
+        // เปิดให้ iframe รับ touch หลังเริ่ม
+        const iframe = document.querySelector(".bearWrap iframe");
+        if (iframe) iframe.style.pointerEvents = "auto";
+      };
 
-          // เล่นอัตโนมัติ
-          if (!timer) {
-            timer = setInterval(() => {
-              if (!started) return;
-              fire();
-            }, 2400);
-          }
-        },
-        { once: true }
-      );
+      // รองรับทุกอุปกรณ์
+      clickLayer.addEventListener("pointerdown", startExperience);
+      clickLayer.addEventListener("touchstart", startExperience);
+      clickLayer.addEventListener("mousedown", startExperience);
     </script>
   </body>
 </html>
-
